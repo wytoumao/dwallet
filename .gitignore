@@ -1,0 +1,38 @@
+# ---- Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# ---- Virtualenv
+.venv/
+venv/
+ENV/
+env/
+
+# ---- IDE / OS
+.idea/
+.vscode/
+*.iml
+.DS_Store
+
+# ---- Test & tooling
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.pytype/
+
+# ---- Secrets & env
+.env
+.env.*
+!.env.example
+
+# ---- Project-specific
+data/keystore/*        # 切记：不要把私钥 keystore 提交
+!data/keystore/.gitkeep
+data/*.db              # 本地 SQLite
+data/*.sqlite*
+*.log

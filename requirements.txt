@@ -1,0 +1,7 @@
+fastapi>=0.111
+uvicorn[standard]>=0.30
+web3>=6.20
+pydantic>=2.7
+python-dotenv>=1.0
+eth-account>=0.11.0
+mnemonic>=0.20

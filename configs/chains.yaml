@@ -1,0 +1,60 @@
+chains:
+  - chainId: 1
+    name: Ethereum Mainnet
+    type: evm
+    coinType: 60
+    eip1559: true
+    poa: false
+    defaultPriorityFeeGwei: 2
+    rpc:
+      - https://rpc.ankr.com/eth
+    explorer:
+      name: Etherscan
+      url: https://etherscan.io
+      api_url: https://api.etherscan.io/api
+      api_key_env: ETHERSCAN_API_KEY
+
+  - chainId: 8453
+    name: Base Mainnet
+    type: l2-op
+    coinType: 60
+    eip1559: true
+    poa: true
+    defaultPriorityFeeGwei: 1
+    l1DataFeeOracle: "0x420000000000000000000000000000000000000F"
+    rpc:
+      - https://mainnet.base.org
+    explorer:
+      name: Basescan
+      url: https://basescan.org
+      api_url: https://api.basescan.org/api
+      api_key_env: BASESCAN_API_KEY
+
+  - chainId: 84532
+    name: Base Sepolia
+    type: l2-op
+    coinType: 60
+    eip1559: true
+    poa: true
+    defaultPriorityFeeGwei: 1
+    l1DataFeeOracle: "0x420000000000000000000000000000000000000F"
+    rpc:
+      - https://sepolia.base.org
+    explorer:
+      name: Basescan Sepolia
+      url: https://sepolia.basescan.org
+
+  - chainId: 11155111
+    name: Sepolia Testnet
+    type: evm
+    coinType: 60
+    eip1559: true
+    poa: false
+    defaultPriorityFeeGwei: 2
+    rpc:
+      - https://rpc.sepolia.org
+    explorer:
+      name: Etherscan Sepolia
+      url: https://sepolia.etherscan.io
+      api_url: https://api-sepolia.etherscan.io/api
+      api_key_env: ETHERSCAN_API_KEY

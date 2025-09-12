@@ -3,8 +3,11 @@ import os
 import sqlite3
 import time
 
-DB_URL = os.getenv("DB_URL", "sqlite:///./data/wallet.db")
-DB_PATH = DB_URL.replace("sqlite:///", "")
+# 强制所有模块使用同一个数据库文件：项目根目录下的 data/wallet.db
+PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+DB_PATH = os.path.join(PROJECT_ROOT, "data", "wallet.db")
+
+print(f"使用数据库: {DB_PATH}")  # 调试信息
 
 def _conn():
     os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
@@ -57,9 +60,10 @@ def get_account(address: str) -> dict | None:
     with _conn() as cx:
         cur = cx.execute(
             "SELECT address, keystore_path, label, created_at FROM accounts WHERE address = ?",
-            (address.lower(),)
+            (address.lower(),)  # 修复：加上逗号使其成为元组
         )
         row = cur.fetchone()
+        print(row)
         if not row:
             return None
         return {

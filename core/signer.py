@@ -8,22 +8,51 @@ from eth_account.messages import encode_defunct, encode_typed_data
 from hexbytes import HexBytes
 
 from adapters.storage import get_account
+from core.logger import get_logger
+
+logger = get_logger()
 
 Account.enable_unaudited_hdwallet_features()
 
 # ---------- 内部：从本地 keystore 解锁私钥 ----------
 def _load_privkey_from_keystore(address: str, password: str) -> bytes:
+    logger.info(f"尝试加载地址: {address}")
+    logger.debug(f"密码类型: {type(password)}, 长度: {len(password)}")
+    logger.debug(f"密码内容: {repr(password)}")
+
     meta = get_account(address)
     if not meta:
+        logger.error(f"账户未找到: {address}")
         raise ValueError("ACCOUNT_NOT_FOUND")
+
     ks_path = meta["keystore_path"]
+    logger.info(f"Keystore路径: {ks_path}")
+    logger.debug(f"当前工作目录: {os.getcwd()}")
+
+    # 转换为绝对路径
+    if not os.path.isabs(ks_path):
+        # 如果是相对路径，基于项目根目录解析
+        project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        ks_path = os.path.join(project_root, ks_path.lstrip('./'))
+        logger.debug(f"转换后的绝对路径: {ks_path}")
+
+    logger.debug(f"Keystore文件存在: {os.path.exists(ks_path)}")
+
     if not os.path.exists(ks_path):
+        logger.error(f"Keystore文件不存在: {ks_path}")
         raise ValueError("KEYSTORE_MISSING")
+
     with open(ks_path, "r", encoding="utf-8") as f:
         ks_json = json.load(f)
+
+    logger.info("Keystore加载成功，开始解密...")
     try:
-        return Account.decrypt(ks_json, password)  # bytes
+        result = Account.decrypt(ks_json, password)  # bytes
+        logger.info("解密成功!")
+        return result
     except Exception as e:
+        logger.error(f"解密失败: {e}")
+        logger.error(f"异常类型: {type(e)}")
         raise ValueError("BAD_PASSWORD") from e
 
 def _acct_from_keystore(address: str, password: str) -> Account:

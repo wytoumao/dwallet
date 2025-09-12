@@ -7,6 +7,9 @@ from core.tx_builder import build_tx_1559, _make_w3, suggest_fees_1559
 from core.signer import sign_tx_1559
 from core import signer as signer_mod
 from adapters.storage import insert_tx_local, update_tx_status
+from core.logger import get_logger
+
+logger = get_logger()
 
 def _ensure_eth_balance_enough(chain_id: int, from_addr: str, value_wei: int, gas_limit: int, max_fee_per_gas: int):
     w3 = _make_w3(chain_id)
@@ -27,12 +30,16 @@ def withdraw_eth(
     gas_limit: Optional[int] = None,
 ) -> Dict[str, Any]:
     """
-    完整出金流程：构造 → 签名 → 落库 → 广播（可选等待回执）
+    完整出金流程：构造 → 签名 → 落库 → 广播（��选等待回执）
     返回: {"hash","raw","tx"}
     """
+    logger.info(f"withdraw_eth 收到参数: gas_limit={gas_limit}")
+
     # 1) 构造交易（含 nonce/fee/gas）
     tx = build_tx_1559(chain_id, from_addr, to, value_wei=value_wei,
                        gas_limit=gas_limit, priority_fee_gwei=priority_fee_gwei)
+
+    logger.info(f"build_tx_1559 返回的 tx: gas={tx.get('gas')}")
 
     # 2) 基于最保守的费用检查余额是否足够
     #    注意：effectiveGasPrice = min(maxFee, base+tip)
